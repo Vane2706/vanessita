@@ -19,7 +19,7 @@ pipeline {
 
                 cleanWs()
 
-                git branch: 'main',
+                git branch: 'master',
                     url: "${REPO_URL}"
             }
         }
