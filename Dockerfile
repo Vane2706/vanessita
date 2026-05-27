@@ -4,7 +4,7 @@ FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
 # copiar jar generado
-COPY target/api-orders-*.jar app.jar
+COPY target/*.jar app.jar
 
 # exponer puerto
 EXPOSE 1711
