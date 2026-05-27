@@ -9,7 +9,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'api-orders'
         CONTAINER_NAME = 'api-orders-container'
-        REPO_URL = 'TU_REPO_GITHUB'
+        REPO_URL = 'https://github.com/Vane2706/vanessita.git'
     }
 
     stages {
