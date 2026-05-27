@@ -1,0 +1,80 @@
+pipeline {
+
+    agent any
+
+    tools {
+        maven 'MAVEN_HOME'
+    }
+
+    environment {
+        IMAGE_NAME = 'api-orders'
+        CONTAINER_NAME = 'api-orders-container'
+        REPO_URL = 'TU_REPO_GITHUB'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+
+                cleanWs()
+
+                git branch: 'main',
+                    url: "${REPO_URL}"
+            }
+        }
+
+        stage('Build & Test') {
+            steps {
+
+                sh 'mvn clean test'
+
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+
+                withSonarQubeEnv('SonarQube') {
+
+                    sh '''
+                    mvn sonar:sonar \
+                    -Dsonar.projectKey=api-orders \
+                    -Dsonar.projectName=api-orders
+                    '''
+                }
+            }
+        }
+
+        stage('Docker Build & Deploy') {
+            steps {
+
+                script {
+
+                    sh 'docker stop ${CONTAINER_NAME} || true'
+                    sh 'docker rm ${CONTAINER_NAME} || true'
+
+                    sh 'docker build -t ${IMAGE_NAME} .'
+
+                    sh '''
+                    docker run -d \
+                    -p 1711:1711 \
+                    --name ${CONTAINER_NAME} \
+                    ${IMAGE_NAME}
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+
+        success {
+            echo 'PIPELINE EXITOSO'
+        }
+
+        failure {
+            echo 'PIPELINE FALLÓ'
+        }
+    }
+}

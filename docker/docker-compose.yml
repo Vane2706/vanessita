@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+
+  api-orders:
+
+    build: .
+
+    container_name: api-orders-container
+
+    ports:
+      - "1711:1711"
+
+    restart: unless-stopped
